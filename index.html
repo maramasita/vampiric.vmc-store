@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vampiric Clothing Store</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%; /* Ensures the body takes up the full height */
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    background-size: 150px;
+    background-repeat: repeat;
+    color: #000;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.85);
+    width: 100%;
+    height: 100%; /* Ensures the container takes up full height */
+}
+
+.content {
+    display: flex;
+    flex-direction: column; /* Stacks items vertically */
+    align-items: center; /* Center the items within content */
+    text-align: center;
+    max-width: 90vw;
+    padding: 5vw;
+}
+
+.logo img {
+    width: 100vw; /* Set width to cover the full viewport width */
+    max-width: 1200px; /* Set a large max-width for higher resolution */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 2.1vw;
+}
+
+.enter-text {
+    font-size: 12vw;
+    font-weight: bold;
+    margin-bottom: 4vw;
+    cursor: pointer; /* Make it clear that this is clickable */
+    text-decoration: none; /* Remove underline */
+}
+
+.social-icons {
+    margin: 3vw 0;
+    font-size: 10vw;
+}
+
+.social-icons a {
+    margin: 0 1vw;
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #555;
+}
+
+.footer {
+    font-size: 3vw;
+    color: #555;
+    margin-top: 3vw;
+}
+
+    /* Responsive adjustments */
+    @media (min-width: 600px) {
+        .container {
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        .content {
+            padding: 50px;
+        }
+    
+        .logo img {
+            width: 15vw;
+            max-width: 900px;
+            margin: 0;
+        }
+    
+        .enter-text {
+            font-size: 28px;
+        }
+    
+        .social-icons {
+            font-size: 28px;
+        }
+    
+        .footer {
+            font-size: 16px;
+        }
+    }
+    
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="logo">
+                <img src="./img/vampiric.png" alt="Logo">
+            </div>
+            <!-- Wrapped the "ENTER" text in a link -->
+            <a href="product.html" class="enter-text">ENTER</a>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/vampiric.vmc?igsh=MXh5bXQ2NzV6aGY5Zg%3D%3D&utm_source=qr"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@vampiric.exe?_t=8rFjP0qR3ii&_r=1"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.facebook.com/share/19L2QHXHpr/?mibextid=LQQJ4d"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://t.me/vampiric_vmc"><i class="fab fa-telegram-plane"></i></a>
+                
+            </div>
+            <div class="footer">Vampiric<br>Clothing Store</div>
+        </div>
+    </div>
+</body>
+</html>

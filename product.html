@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page</title>
+    <style>
+        /* Reset and body styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        /* Logo styling */
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .logo img {
+            width: auto;
+            height: 100px;
+        }
+
+        /* Cart Icon styling */
+        .cart-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Sidebar styling */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-sidebar h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        /* Product container styling */
+        .product-container {
+            display: flex;
+            background-color: white;
+            padding: 30px;
+            max-width: 1000px;
+            border-radius: 8px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .product-image {
+            width: 400px;
+            height: auto;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Product details styling */
+        .product-details {
+            margin-left: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-details h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .size-selector, .quantity, .pagination {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .size-selector label, .quantity label {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .sizes button, .quantity-btn, .add-to-cart {
+            padding: 12px 20px;
+            margin-right: 8px;
+            border: 1px solid #333;
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-size: 16px;
+        }
+
+        .sizes button:hover, .quantity-btn:hover, .add-to-cart:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .sizes button:active, .quantity-btn:active, .add-to-cart:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sizes .selected {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .add-to-cart {
+            background-color: black;
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 15px 25px;
+        }
+
+        .quantity-btn {
+            width: 40px;
+        }
+
+        .quantity-value {
+            font-size: 18px;
+            margin: 0 15px;
+        }
+
+        /* Pagination styling */
+        .pagination button {
+            padding: 8px 12px;
+            margin: 10px 5px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .pagination button:hover {
+            background-color: #333;
+            color: white;
+        }
+
+        /* Remove button styling */
+        .remove-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cart Icon -->
+    <div class="cart-icon" onclick="toggleCartSidebar()">
+        🛒
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <h2>Your Cart</h2>
+        <div id="cartItems"></div>
+        <p class="cart-total">Total: $<span id="cartTotal">0.00</span></p>
+        <button id="checkoutButton" onclick="checkout()" style="margin-top: 20px; padding: 10px 20px; background-color: #333; color: white; border: none; cursor: pointer;">Checkout</button>
+    </div>
+
+    <!-- Logo centered above the product container -->
+    <div class="logo">
+        <img src="./img/logo.gif" alt="Logo">
+    </div>
+
+    <!-- Product container -->
+    <div class="product-container">
+        <div class="product-image">
+            <img src="./img/pro1.jpg" alt="VAMPIRIC HEAVENLY">
+        </div>
+        <div class="product-details">
+            <h1>VAMPIRIC HEAVENLY</h1>
+            <p class="price">$18.00</p>
+            
+            <div class="size-selector">
+                <label>Size</label>
+                <div class="sizes">
+                    <button onclick="selectSize(this)">S</button>
+                    <button onclick="selectSize(this)">M</button>
+                    <button onclick="selectSize(this)">L</button>
+                    <button onclick="selectSize(this)">XL</button>
+                </div>
+            </div>
+            
+            <div class="quantity">
+                <label>Quantity</label>
+                <button class="quantity-btn">-</button>
+                <span class="quantity-value">1</span>
+                <button class="quantity-btn">+</button>
+            </div>
+            
+            <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+            
+            <div class="pagination">
+                <button>&lt; Home</button>
+                <button>Home &gt;</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Function to handle size selection
+        function selectSize(button) {
+            // Remove the 'selected' class from all buttons
+            const sizeButtons = document.querySelectorAll('.sizes button');
+            sizeButtons.forEach(btn => btn.classList.remove('selected'));
+
+            // Add the 'selected' class to the clicked button
+            button.classList.add('selected');
+        }
+
+        // Function to add the product to the cart
+        function addToCart() {
+            const selectedSize = document.querySelector('.sizes .selected');
+            if (!selectedSize) {
+                alert("Please select a size.");
+                return;
+            }
+
+            const product = {
+                name: "VAMPIRIC HEAVENLY",
+                price: 18.00,
+                quantity: parseInt(document.querySelector('.quantity-value').innerText),
+                size: selectedSize.innerText,
+                image: "./img/pro1.jpg"
+            };
+
+            // Retrieve cart array from localStorage or create a new one
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingProductIndex = cart.findIndex(item => item.name === product.name && item.size === product.size);
+
+            if (existingProductIndex !== -1) {
+                // If product already exists, update the quantity
+                cart[existingProductIndex].quantity += product.quantity;
+            } else {
+                // Add new product to cart
+                cart.push(product);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert("Product added to cart!");
+
+            // Reload the cart items to show the updated cart
+            loadCartItems();
+        }
+
+        // Function to load cart items from localStorage and display in the sidebar
+        function loadCartItems() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            let total = 0;
+            cartItemsContainer.innerHTML = '';
+
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div>
+                        <p>${item.name} (${item.size})</p>
+                        <p>Qty: ${item.quantity}</p>
+                        <p>$${item.price * item.quantity}</p>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart('${item.name}', '${item.size}')">Remove</button>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+                total += item.price * item.quantity;
+            });
+
+            cartTotal.innerText = total.toFixed(2);
+        }
+
+        // Function to remove an item from the cart
+        function removeFromCart(productName, productSize) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => !(item.name === productName && item.size === productSize));
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCartItems();
+        }
+
+        // Function to toggle the cart sidebar
+        function toggleCartSidebar() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            cartSidebar.classList.toggle('open');
+        }
+
+        // Function to checkout (for now, just an alert)
+        function checkout() {
+            window.location.href = "checkout.html";
+        }
+        
+
+        // Load cart items when page loads
+        window.onload = function() {
+            loadCartItems();
+        };
+    </script>
+</body>
+</html>

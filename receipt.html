@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* General styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #1a1a1a;
+            color: #eaeaea;
+            padding: 20px;
+        }
+
+        /* Logo styling */
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .logo img {
+            height: 80px;
+            width: auto;
+        }
+
+        /* Receipt container styling */
+        .receipt-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+            margin: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .receipt-container:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #f3f1e8;
+        }
+
+        .order-details, .order-summary {
+            margin-bottom: 25px;
+        }
+
+        .detail-item, .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #eaeaea;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .summary-item img {
+            width: 60px;
+            height: auto;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .summary-item div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-item p {
+            margin: 4px 0;
+            color: #eaeaea;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 20px;
+            color: #f9f7f0;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #444;
+            border-radius: 5px;
+        }
+
+        /* Back button styling */
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #444;
+            transform: translateY(-2px);
+        }
+
+        /* ABA image styling */
+        .aba-image {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo -->
+    <div class="logo">
+        <img src="./img/vampiric.png" alt="Logo">
+    </div>
+
+    <!-- Receipt Container -->
+    <div class="receipt-container">
+        <h2>Receipt</h2>
+
+        <!-- Order Details -->
+        <div class="order-details" id="order-details">
+            <!-- Order details will be dynamically loaded here -->
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary" id="order-summary">
+            <h3>Order Summary</h3>
+            <div class="summary-item" id="product-summary">
+                <!-- Product details will be dynamically loaded here -->
+            </div>
+            <div class="summary-totals">
+                <div class="detail-item"><strong>Delivery Fee:</strong> <span id="delivery-fee"></span></div>
+                <div class="total">Total Price: <span id="total-price"></span></div>
+            </div>
+        </div>
+        <h2>Please take a screenshot and send it to <a href="https://t.me/vampiric_vmc" target="_blank">Vampiric</a>.</h2>
+        <!-- Back to Home Button -->
+        <a href="index.html" class="back-button">Back to Home</a>
+        
+        <!-- ABA Image (hidden by default) -->
+        <img src="./img/ABA.jpg" alt="ABA Payment Instructions" class="aba-image" id="aba-image">
+    </div>
+
+    <script>
+        // Function to load order details and product summary from localStorage and display them
+        function loadOrderDetails() {
+            const orderDetails = JSON.parse(localStorage.getItem("orderDetails"));
+            const productDetails = JSON.parse(localStorage.getItem("cart")) || [];  // Assuming cart holds product details
+            const deliveryFee = 2;
+            
+            const orderDetailsElement = document.getElementById("order-details");
+            const productSummaryElement = document.getElementById("product-summary");
+            const deliveryFeeElement = document.getElementById("delivery-fee");
+            const totalPriceElement = document.getElementById("total-price");
+            const abaImageElement = document.getElementById("aba-image"); // Reference to the ABA image element
+
+            if (orderDetails) {
+                orderDetailsElement.innerHTML = ` 
+                    <div class="detail-item"><strong>Name:</strong> <span>${orderDetails.name}</span></div>
+                    <div class="detail-item"><strong>Instagram:</strong> <span>${orderDetails.instagram}</span></div>
+                    <div class="detail-item"><strong>Phone:</strong> <span>${orderDetails.phone}</span></div>
+                    <div class="detail-item"><strong>Address:</strong> <span>${orderDetails.address}</span></div>
+                    <div class="detail-item"><strong>Payment Method:</strong> <span>${orderDetails.payment === 'cash' ? 'Cash on Delivery' : 'ABA'}</span></div>
+                `;
+
+                // Show ABA image if payment method is not 'cash'
+                if (orderDetails.payment !== 'cash') {
+                    abaImageElement.style.display = 'block'; // Show the image if payment is not 'cash'
+                } else {
+                    abaImageElement.style.display = 'none'; // Hide it otherwise
+                }
+            }
+
+            if (productDetails.length > 0) {
+                let productHTML = '';
+                let totalAmount = 0;
+
+                productDetails.forEach(product => {
+                    const price = parseFloat(product.price) || 0;
+                    const quantity = parseInt(product.quantity) || 1;
+
+                    productHTML += `
+                        <div class="summary-item">
+                            <img src="${product.image}" alt="${product.name}">
+                            <div>
+                                <p><strong>${product.name}</strong></p>
+                                <p>Size: ${product.size || "N/A"}</p>
+                                <p>Quantity: ${quantity}</p>
+                                <p>Price: $${price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    totalAmount += price * quantity;
+                });
+
+                productSummaryElement.innerHTML = productHTML;
+                const totalPrice = totalAmount + deliveryFee;
+                deliveryFeeElement.textContent = `$${deliveryFee.toFixed(2)}`;
+                totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+            } else {
+                productSummaryElement.innerHTML = "<p>No product details available.</p>";
+                deliveryFeeElement.textContent = `$${deliveryFee.toFixed(2)}`;
+                totalPriceElement.textContent = "$0.00";
+            }
+        }
+
+        // Load order details on page load
+        window.onload = loadOrderDetails;
+    </script>
+</body>
+</html>
